@@ -1,7 +1,8 @@
-#日常项目文档
-
+记录日常中好用的代码
+==================
+（本人技术小白、仅以此记录自己的成长）
 ##1.1代码片段整理
-swiper 轮播图
+swiper 轮播图（我很喜欢的一款轮播）
 ```
 <div class="swiper-container">
   <div class="swiper-wrapper">
