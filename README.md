@@ -3,6 +3,7 @@
 （本人技术小白、仅以此记录自己的成长）
 
 ##1.1代码片段整理
+
 swiper 轮播图（我很喜欢的一款轮播）
 ```
 <div class="swiper-container">
@@ -56,3 +57,36 @@ pc/移动浏览器判断跳转js
    }
 </script>
 ```
+css样式书写规范、顺序
+--
+1.位置属性(position, top, right, z-index, display, float等)
+
+ 2.大小(width, height, padding, margin)
+ 
+ 3.文字系列(font, line-height, letter-spacing, color- text-align等)
+ 
+ 4.背景(background, border等)
+ 
+ 5.其他(animation, transition等)
+ 
+ 6.CSS有些属性是可以缩写的，比如padding,margin,font等等，这样精简代码同时又能提高用户的阅读体验。
+ 
+ 7.去掉小数点前的“0”
+ 
+ 8.简写命名 但一定要让人看懂你的命名！
+ 
+ 9.16进制颜色代码缩写  有些颜色代码是可以缩写的，我们就尽量缩写吧，提高用户体验为主
+ 
+ 10.连字符CSS选择器命名规范
+ 
+   10.1长名称或词组可以使用中横线来为选择器命名。   
+   10.2不能用“_”下划线来命名CSS选择器，为什么呢？
+       一些浏览器已经不允许使用下划线来命名CSS选择器（就是不兼容）；
+       能良好区分JavaScript变量命名.
+       
+ 11.不要随意使用id
+    id在JS是唯一的，不能多次使用，而使用class类选择器却可以重复使用，另外id的优先级优先与class，所以id应该按需使用，而不能滥用。
+   
+ 12.为选择器添加状态前缀
+    
+  有时候可以给选择器添加一个表示状态的前缀，全语义更明了，比如下图是添加了“.is-”前缀。
