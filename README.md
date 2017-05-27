@@ -30,6 +30,7 @@ var swiper = new Swiper('
 </script>
 ```
 pc/移动浏览器判断跳转js
+--
 ```
 <script>
    var browser={  
@@ -90,3 +91,4 @@ css样式书写规范、顺序
  12.为选择器添加状态前缀
     
   有时候可以给选择器添加一个表示状态的前缀，全语义更明了。
+  
