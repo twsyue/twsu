@@ -31,7 +31,7 @@ var swiper = new Swiper('
 ```
 pc/移动浏览器判断跳转js
 --
-方案1
+方案1（使用中发现linux会被当做移动版本，已弃用 但是这段确实用了挺久的）
 ```javascript
   var browser={  
    versions:function(){   
@@ -80,7 +80,37 @@ pc/移动浏览器判断跳转js
   
         browserRedirect();  
 ```
- 
+方案3
+```javascript
+/*
+*
+* 判断PC端与WAP端
+*/
+var mobile_bs = {
+    versions: function() {
+        var u = navigator.userAgent;
+        return {
+            trident: u.indexOf('Trident') > -1, //IE内核
+            presto: u.indexOf('Presto') > -1,  //opera内核
+            webKit: u.indexOf('AppleWebKit') > -1,  //苹果、谷歌内核
+            gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1,  //火狐内核
+            mobile: !! u.match(/AppleWebKit.*Mobile.*/) || !! u.match(/AppleWebKit/) && u.indexOf('QIHU') && u.indexOf('QIHU') > -1 && u.indexOf('Chrome') < 0,  //是否为移动终端
+            ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/),  //ios终端
+            android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1,  //android终端或者uc浏览器
+            iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1,   //是否为iPhone或者QQHD浏览器
+            iPad: u.indexOf('iPad') > -1,     //是否iPad
+            webApp: u.indexOf('Safari') == -1   //是否web应该程序，没有头部与底部
+        }
+    } ()
+};
+
+if (mobile_bs.versions.mobile) {
+    if (mobile_bs.versions.android || mobile_bs.versions.iPhone || mobile_bs.versions.iPad || mobile_bs.versions.ios) {
+        window.location.href = "移动端网址";
+    }
+};
+
+```
 
 css样式书写规范、顺序
 --
@@ -206,4 +236,108 @@ H5微信播放全屏问题
                      landscape横屏，portraint竖屏，默认值为竖屏*/
   style="object-fit:fill">
 </video>
+```
+poster="demo.jpg":属性规定视频下载时显示的图像，或者在用户点击播放按钮前显示的图像。(可怕的是我有发现其实它不总是那么好用。。)如果未设置该属性，则使用视频的第一帧来代替。
+preload="auto" ：属性规定在页面加载后载入视频。
+webkit-playsinline和playsinline：视频播放时局域播放，不脱离文档流 。 额这个呢目前发现只有ios的微信是可以的安卓不行。。
+如遇到需要全屏使用的情况 ISO需要设置删除 webkit-playsinline 标签,设置false没用，安卓却总是会全屏不用管它；
+之后的坑又出现了 全屏了会出现control条 无论你是否设置都会出现 欠的不行
+x5-video-player-type：启用同层H5播放器，就是在视频全屏的时候，div可以呈现在视频层上，也是WeChat安卓版特有的属性。同层播放别名也叫做沉浸式播放，播放的时候看似全屏，但是已经除去了control和微信的导航栏，只留下"X"和"<"两键。目前的同层播放器只在Android（包括微信）上生效，
+暂时不支持iOS。。。至于为什么同层播放只对安卓开放，是因为安卓不能像ISO一样局域播放，默认的全屏会使得一些界面操作被阻拦所以这时候同层播放的概念就解决了这个问题。不过在测试的过程中发现，不同版本的ISO和安卓效果略有不同。
+
+x5-video-orientation：声明播放器支持的方向，可选值landscape 横屏, portraint竖屏。默认值portraint。无论是直播还是全屏H5一般都是竖屏播放，但是这个属性需要x5-video-player-type开启H5模式
+
+x5­-video­-player­-fullscreen：全屏设置。它又两个属性值，ture和false，true支持全屏播放，false不支持全屏播放。
+
+其实，ISO 微信浏览器是Chrome的内核，相关的属性都支持，也是为什么X5同层播放不支持的原因。安卓微信浏览器是X5内核，一些属性标签比如playsinline就不支持，所以始终全屏。
+
+还有个问题，在Android的微信里面，就算加上了上面的属性，还会出现上下有黑边，不能全屏的问题。
+
+解决办法：给video加上object-fit: fill;的style属性。如果还是有黑边有可能是视频尺寸不合适。
+
+```html
+<div id="videobox">
+   <video 
+    id="videoALL" 
+    src="mp4.mp4" 
+    poster="1.jpg" 
+    preload="auto" 
+    webkit-playsinline="true" 
+    playsinline="true" 
+    x-webkit-airplay="allow" 
+    x5-video-player-type="h5" 
+    x5-video-player-fullscreen="true" 
+    x5-video-orientation="portraint"
+    style="object-fit:fill">
+    </video> 
+
+   <div id="btn" onclick="playcontr()"></div>
+</div>
+<div id="videoend"><div id="againbtn" onclick="playcontr()"></div></div>
+```
+```css
+*{
+            padding: 0;
+            margin: 0;
+        }
+    #videobox{position: absolute;width: 100%;height: 100%;background-color: green;background-image: url(1.jpg);background-size: 100% 100%;background-position: top;overflow: hidden;}
+    #videoALL{
+  height: auto;
+  position: absolute;
+  width: 100%;
+  top: 0;
+  left: 0;
+  object-fit: fill;
+  display: block;
+  background-size: cover;
+  overflow: hidden;}
+    #btn,#againbtn{width: 81px;height: 75px;position: absolute;top: 50%;left:50%;margin-top: -37.5px;margin-left: -40.5px;background-image: url(btn.png);background-size: 100% 100%;}
+    #videoend{position: absolute;background-color: pink;display: none;background-image: url(2.jpg);background-size: cover;background-position: top;}
+
+```
+
+```javascript
+var videoALL = document.getElementById('videoALL'),
+    videobox = document.getElementById('videobox'),
+    btn = document.getElementById('btn'),
+    videoend =  document.getElementById('videoend');
+var clientWidth = document.documentElement.clientWidth;
+var clientHeight = document.documentElement.clientHeight;
+videoALL.style.width = clientWidth + 'px';
+videoALL.style.height = 'auto';
+document.addEventListener('touchmove', function(e){e.preventDefault()}, false);
+
+function stylediv(divId){
+    divId.style.width = clientWidth + 'px';
+    divId.style.height = clientHeight +200+ 'px'; 
+}
+stylediv(videobox);
+stylediv(videoend);
+
+var u = navigator.userAgent; 
+var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端 
+var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端 
+
+function playcontr(){
+    if (isAndroid) {
+       videoALL.style.width = window.screen.width + 'px';
+       videoALL.style.height = window.screen.height + 'px'; 
+    }
+    videobox.style.display = "block";
+    videoALL.play();
+    btn.style.display = "none";
+    videoend.style.display = "none";
+};
+
+videoALL.addEventListener('pause',function(){  
+    videoALL.style.width = clientWidth + 'px';
+    btn.style.display = "block";
+})  
+
+videoALL.addEventListener("ended",function(){
+    videoALL.pause();
+    videobox.style.display = "none";
+    videoend.style.display = "block";
+});
+
 ```
